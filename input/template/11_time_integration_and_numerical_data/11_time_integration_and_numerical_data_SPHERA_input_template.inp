@@ -90,17 +90,23 @@
 !    any restart time.
 !    =0 (fixed frontiers)
 !    =1 (mobile frontiers)
+![?] <ren>: Renormalization Flag
+!    =0 (not active)
+!    =1 (active)
+![?] <Btol>: Renormalization tollerance
 !-------------------------------------------------------------------------------
 ![*] <final_time> <final_time_step>
 ![*] <CFL> <vsc_coeff> <Leapfrog_flag> <scheme_order> <factor> <dt_alfa_Mon>
 ![*] <teta_p> <teta_u> <var> 
 ![*] <COEFNMAXPARTI> <COEFNMAXPARTJ> <body_part_reorder>
+![*] <ren> <Btol> 
 !-------------------------------------------------------------------------------
 !<<<****************************************************************************
 ___ ___
 ___ ___ ___ ___ ___ ___
 ___ ___ ___
 ___ ___ ___
+___ ___
 !>>>****************************************************************************
 !-------------------------------------------------------------------------------
 ![?] if (3D) then
