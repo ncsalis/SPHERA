@@ -38,6 +38,8 @@ implicit none
 integer(4),intent(in) :: npi
 integer(4) :: npj,contj,npartint
 double precision :: rhoi,rhoj,amassj,moddervel,appo
+double precision, dimension(3,3) :: Binv
+double precision :: cs_gradk(3), cs_gradk_n(3)
 #ifdef SPACE_3D
 double precision :: moddia,modout
 #elif defined SPACE_2D
@@ -67,6 +69,10 @@ dvar(:) = zero
    aij(:) = zero
 #endif
 dvdi(:) = zero
+! Kernel renormalization procedure
+if (input_any_t%ren == 1) then
+   call renorm_k(npi,1,Binv)
+endif
 ! First loop to find interacting particles and saving 
 do contj=1,nPartIntorno(npi)
    npartint = (npi - 1) * NMAXPARTJ + contj
@@ -92,9 +98,18 @@ do contj=1,nPartIntorno(npi)
 ! Continuity equation
    pesogradj(:) = amassj * rag(:,npartint) * PartKernel(1,npartint) / rhoj
    if (Granular_flows_options%KTGF_config.ne.1) then
+      if (input_any_t%ren == 1 ) then
+         cs_gradk(:) = zero
+         cs_gradk_n(:) = zero
+         cs_gradk(:)=-PartKernel(1,npartint)*rag(:,npartint)
+         call MatrixProduct(Binv(:,:),cs_gradk(:),cs_gradk_n(:),3,3,1) 
+         appo = - amassj * (dvar(1)*cs_gradk_n(1) + dvar(2)*cs_gradk_n(2) +              &
+         dvar(3)*cs_gradk_n(3))
+      else 
       appo = amassj * PartKernel(1,npartint) *                                 &
              (dvar(1)*rag(1,npartint) + dvar(2)*rag(2,npartint) +              &
              dvar(3)*rag(3,npartint))
+      endif 
       else
          appo = rhoi * PartKernel(1,npartint) * (amassj / rhoj) *              &
                 (dvar(1) * rag(1,npartint) + dvar(2) * rag(2,npartint) +       &

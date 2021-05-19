@@ -102,7 +102,7 @@ if (Domain%Slip) then
 endif
 ! Kernel renormalization procedure
 if (input_any_t%ren == 1) then
-   call renorm_k(npi,Binv)
+   call renorm_k(npi,3,Binv)
 endif
 do contj=1,nPartIntorno(npi)
    npartint = (npi - 1) * NMAXPARTJ + contj

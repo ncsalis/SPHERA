@@ -22,8 +22,11 @@
 ! Program unit: renorm_k
 ! Description:  Reormalization algorithm on the Gallati Anti Cluster Kernel 
 ! derivative.
+! PK is the kernel option:
+! PK=1 cubic spline kernel gredient
+! PK=3 Gallati anti-kluster kernel
 !-------------------------------------------------------------------------------
-subroutine renorm_k(npi,Binv)
+subroutine renorm_k(npi,PK,Binv)
 !------------------------
 ! Modules
 !------------------------
@@ -34,7 +37,7 @@ use Dynamic_allocation_module
 ! Declarations
 !------------------------
 implicit none
-integer(4),intent(in) :: npi
+integer(4),intent(in) :: npi,PK
 integer(4) :: npj,contj,npartint,ii,index_rij_su_h
 double precision, dimension (3,1) :: gradk
 double precision, dimension (1,3) :: gradk_t
@@ -82,7 +85,7 @@ do contj=1,nPartIntorno(npi)
    index_rij_su_h = int(rij_su_h)
    if (index_rij_su_h>=2) cycle
 !trasposing vector column to row
-    gradk(:,1) = -PartKernel(3,npartint)*rag(:,npartint)
+    gradk(:,1) = -PartKernel(PK,npartint)*rag(:,npartint)
     call MatrixTransposition(gradk(:,1),gradk_t(1,:),1,3)
 !sum of the contributions over the neighbouring particles
     call MatrixProduct(rag(:,npartint),gradk_t(1,:),gradk_incr(:,:),3,1,3)
